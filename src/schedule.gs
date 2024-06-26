@@ -6,7 +6,6 @@ function generateSchedule(year, month) {
   // const cell = sheet.getRange(row, column)
   const cell = sheet.getActiveCell()
 
-  const ruleCheckbox = SpreadsheetApp.newDataValidation().requireCheckbox().build()
   const holidayDB = new HolidayDB()
 
   let row = cell.getRow()
@@ -76,6 +75,10 @@ function generateSchedule(year, month) {
     ]) // [[True, True, ...]]
     rangeDaily.setDataValidation(ruleCheckbox)
     rangeDaily.setFontColor("red")
+
+    let range = sheet.getRange(row + getHeaderIndex(FieldOnDutyPerson), // 值班人
+      beginCol + 1, 1, 7)
+    range.setDataValidation(ruleEmployee)
 
     // 日巡查往下的所有欄位高度都設定成35
     // https://developers.google.com/apps-script/reference/spreadsheet/sheet#setRowHeights(Integer,Integer,Integer)

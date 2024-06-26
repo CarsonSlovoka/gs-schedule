@@ -7,6 +7,14 @@
  * @property {string} desc
  */
 
+/**
+ * 員工
+ * @typedef {Object} Employee
+ * @property {string} id
+ * @property {string} name
+ * @property {boolean} isPresent 是否在職
+ */
+
 function GetHolidayData() {
   const spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
   const sheet = spreadsheet.getSheetByName('放假清單')
@@ -40,4 +48,41 @@ class HolidayDB {
   get(date) {
     return this.m[date]
   }
+}
+
+/**
+ * @return {Array} [員工編號, 姓名, 是否在職]
+ **/
+function GetEmployeeData() {
+  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
+  const sheet = spreadsheet.getSheetByName('員工')
+  const range = sheet.getRange('A2:C') // 跳過標題
+  return range.getValues().filter(e => e[0] !== "") // 空列就跳過
+}
+
+class EmployeeDB {
+  constructor() {
+    this.m = GetEmployeeData().filter(e=>e[2] === true) // 只挑選在職的員工
+      .reduce((obj, e)=>{
+      obj[e[0]] = {
+        id: e[0],
+        name: e[1],
+        isPresent: e[2],
+      }
+      return obj
+    }, {})
+  }
+
+  /**
+   * @return Employee
+   **/
+  get(id) {
+    return this.m[id]
+  }
+}
+
+function TestEmployeeDB() {
+  const d = new EmployeeDB()
+  const employee = d.get("123")
+  console.log(employee)
 }
