@@ -35,6 +35,7 @@ function generateSchedule(year, month) {
   }
 
   let endRow = row
+  let countWorkData = 0 // 上班日
   while (date < endData) {
     const beginCol = col
     // 縱向
@@ -54,6 +55,8 @@ function generateSchedule(year, month) {
         if (hObj !== undefined) {
           if (hObj.isHoliday) {
             sheet.getRange(row, col).setBackground("#FF99CC")
+          } else {
+            countWorkData++
           }
           if (hObj.desc !== "") {
             sheet.getRange(row + getHeaderIndex(FieldDateRemarks), col).setValue(hObj.desc) // 我們知道這裡往下x列會到日期備註
@@ -101,6 +104,8 @@ function generateSchedule(year, month) {
   )
 
   sheet.getRange(endRow + 1, beginCol + 3).setValue("上班日")
+  sheet.getRange(endRow + 1, beginCol + 4).setValue(countWorkData)
+  sheet.getRange(endRow + 1, beginCol + 4).setNumberFormat('0"天"') // 自訂數字格式，直接把天放在數字之後
 }
 
 function TestGenerateSchedule() {
