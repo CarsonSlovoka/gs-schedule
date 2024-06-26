@@ -21,7 +21,7 @@ function generateSchedule(year, month) {
   titleRange.setVerticalAlignment("middle")
   titleRange.setFontSize(36)
   row++
-  var weekdays = ["一", "二", "三", "四", "五", "六", "日"]
+  const weekdays = ["一", "二", "三", "四", "五", "六", "日"]
   const endCol = col + 7 + 1 // 有一列是空白分隔
   for (var i = 0; i < 7; i++) {
     sheet.getRange(row, col + i + 1).setValue(weekdays[i]);
@@ -33,7 +33,7 @@ function generateSchedule(year, month) {
   if (date.getDay() !== 1) { // 0 sunDay, (0 to 6)
     date.setDate(date.getDate() - (date.getDay() - 1)) // 如果1日是在星期五，那麼要退回到5-1等於4天前
   }
-  const itemHeader = ['日期', '值班人', '日巡查', '周巡查', '二周', '夜間', '備註', '日期備註']
+
   let endRow = row
   while (date < endData) {
     const beginCol = col
@@ -55,7 +55,7 @@ function generateSchedule(year, month) {
             sheet.getRange(row, col).setBackground("#FF99CC")
           }
           if (hObj.desc !== "") {
-            sheet.getRange(row + 7, col).setValue(hObj.desc) // 我們知道這裡往下7列會到日期備註
+            sheet.getRange(row + getHeaderIndex(FieldDateRemarks), col).setValue(hObj.desc) // 我們知道這裡往下x列會到日期備註
           }
         }
         /*
@@ -70,7 +70,7 @@ function generateSchedule(year, month) {
 
     // 橫向: 日巡查
     // 從日巡查開始 的 1列 7欄 改成checkbox
-    const rangeDaily = sheet.getRange(row + 2, // 日巡查
+    const rangeDaily = sheet.getRange(row + getHeaderIndex(FieldOnDutyInspection), // 日巡查
       beginCol + 1, 1, 7)
     rangeDaily.setValues([
       [...Array(7)].map((_, i) => "False")
