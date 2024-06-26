@@ -50,6 +50,7 @@ function generateSchedule(year, month) {
         const curRange = sheet.getRange(row, col)
         curRange.setValue(date.getDate())
         const hObj = holidayDB.get(date)
+        // if (i === 5 || i=== 6) { // 星期六,日
         if (hObj !== undefined) {
           if (hObj.isHoliday) {
             sheet.getRange(row, col).setBackground("#FF99CC")
@@ -58,11 +59,6 @@ function generateSchedule(year, month) {
             sheet.getRange(row + getHeaderIndex(FieldDateRemarks), col).setValue(hObj.desc) // 我們知道這裡往下x列會到日期備註
           }
         }
-        /*
-        if (i === 5 || i=== 6) { // 星期六,日
-          sheet.getRange(row, col).setBackground("#FF99CC")
-        }
-        */
         date.setDate(date.getDate() + 1)
         col++
       }
@@ -77,6 +73,14 @@ function generateSchedule(year, month) {
     ]) // [[True, True, ...]]
     rangeDaily.setDataValidation(ruleCheckbox)
     rangeDaily.setFontColor("red")
+
+    // 日巡查往下的所有欄位高度都設定成35
+    // https://developers.google.com/apps-script/reference/spreadsheet/sheet#setRowHeights(Integer,Integer,Integer)
+    sheet.setRowHeights(
+      row + getHeaderIndex(FieldWeeklyInspection),
+      itemHeader.length - getHeaderIndex(FieldWeeklyInspection),
+      35,
+    )
 
     row += itemHeader.length
     endRow = row
