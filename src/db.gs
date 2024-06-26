@@ -1,3 +1,12 @@
+// https://jsdoc.app/tags-typedef
+
+/**
+ * 休假日
+ * @typedef {Object} Holiday
+ * @property {boolean} isHoliday
+ * @property {string} desc
+ */
+
 function GetHolidayData() {
   const spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
   const sheet = spreadsheet.getSheetByName('放假清單')
@@ -13,19 +22,22 @@ function GetHolidayData() {
   })
 }
 
-function GetHolidayMap() {
-  const m = {}
-  GetHolidayData().forEach(e => {
-    m[e[0]] = {
-      isHoliday: e[2] === 2,
-      desc: e[3],
-    }
-  })
-  return m
-}
+class HolidayDB {
+  constructor() {
+    const m = {}
+    GetHolidayData().forEach(e => {
+      m[e[0]] = {
+        isHoliday: e[2] === 2,
+        desc: e[3],
+      }
+    })
+    this.m = m
+  }
 
-function TestGetHolidayMap() {
-  const holiday = GetHolidayMap()
-  const n = len(holiday)
-  console.log(n)
+  /**
+   * @return Holiday
+   **/
+  get(date) {
+    return this.m[date]
+  }
 }

@@ -7,7 +7,7 @@ function generateSchedule(year, month) {
   const cell = sheet.getActiveCell()
 
   const ruleCheckbox = SpreadsheetApp.newDataValidation().requireCheckbox().build()
-  const holidayMap = GetHolidayMap()
+  const holidayDB = new HolidayDB()
 
   let row = cell.getRow()
   const beginRow = row
@@ -49,13 +49,13 @@ function generateSchedule(year, month) {
       if (date < endData) { // 避免因為+1之後已經不同月份了
         const curRange = sheet.getRange(row, col)
         curRange.setValue(date.getDate())
-        const holidayObj = holidayMap[date]
-        if (holidayObj !== undefined) {
-          if (holidayObj.isHoliday) {
+        const hObj = holidayDB.get(date)
+        if (hObj !== undefined) {
+          if (hObj.isHoliday) {
             sheet.getRange(row, col).setBackground("#FF99CC")
           }
-          if (holidayObj.desc !== "") {
-            sheet.getRange(row + 7, col).setValue(holidayObj.desc) // 我們知道這裡往下7列會到日期備註
+          if (hObj.desc !== "") {
+            sheet.getRange(row + 7, col).setValue(hObj.desc) // 我們知道這裡往下7列會到日期備註
           }
         }
         /*
