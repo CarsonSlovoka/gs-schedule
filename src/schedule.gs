@@ -1,6 +1,7 @@
+const ss = SpreadsheetApp.getActiveSpreadsheet()
+
 function generateSchedule(year, month) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet()
-  var sheet = ss.getActiveSheet()
+  const sheet = ss.getActiveSheet()
   // const lastRow = sheet.getLastRow()
   // const cell = sheet.getRange("A1")
   // const cell = sheet.getRange(row, column)
@@ -35,6 +36,7 @@ function generateSchedule(year, month) {
 
   let endRow = row
   let countWorkData = 0 // 上班日
+  const employeeRanges = [] // 記錄所有員工列表的儲存格名稱，例如: ["A1:A7", "C1:C7"]
   while (date < endData) {
     const beginCol = col
     // 縱向
@@ -79,6 +81,7 @@ function generateSchedule(year, month) {
     let range = sheet.getRange(row + getHeaderIndex(FieldOnDutyPerson), // 值班人
       beginCol + 1, 1, 7)
     range.setDataValidation(ruleEmployee)
+    employeeRanges.push(range.getA1Notation())
 
     // 日巡查往下的所有欄位高度都設定成35
     // https://developers.google.com/apps-script/reference/spreadsheet/sheet#setRowHeights(Integer,Integer,Integer)
@@ -109,6 +112,11 @@ function generateSchedule(year, month) {
   sheet.getRange(endRow + 1, beginCol + 3).setValue("上班日")
   sheet.getRange(endRow + 1, beginCol + 4).setValue(countWorkData)
   sheet.getRange(endRow + 1, beginCol + 4).setNumberFormat('0"天"') // 自訂數字格式，直接把天放在數字之後
+
+  // 自動整理出當月員工出勤的天數
+  // sheet.getRange(endRow + 1, beginCol + 5).setValue(`=RowToColumnSet(B225:H225,B233:H233)`)
+  sheet.getRange(endRow + 1, beginCol + 5).setValue(`=RowToColumnSet(${employeeRanges.join(",")})`)
+  sheet.getRange(endRow + 1, beginCol + 6).setValue(`=COUNTIF(${entireRange.getA1Notation()}, ${sheet.getRange(endRow + 1, beginCol + 5).getA1Notation()})`)
 }
 
 function TestGenerateSchedule() {
