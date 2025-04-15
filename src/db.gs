@@ -1,5 +1,11 @@
 // https://jsdoc.app/tags-typedef
 
+/**
+ * 可以從: https://data.gov.tw/dataset/14718 取得到csv檔案，例如:
+ * 114年中華民國政府行政機關辦公日曆表.csv 👈 此為2025年的行事曆
+ * 接著複製所有文字，貼到google-sheet上，再用資料分割就可以製成: 放假清單 的表格
+ * 放假清單: https://docs.google.com/spreadsheets/d/1dpp1qTPYUdB-8LAc7Q0AqAKw7T3NL_db4Mi9mm6-6Yk/edit?gid=582584444#gid=582584444
+ */
 function GetHolidayData() {
   const spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
   const sheet = spreadsheet.getSheetByName('放假清單')
