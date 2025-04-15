@@ -1,20 +1,5 @@
 // https://jsdoc.app/tags-typedef
 
-/**
- * 休假日
- * @typedef {Object} Holiday
- * @property {boolean} isHoliday
- * @property {string} desc
- */
-
-/**
- * 員工
- * @typedef {Object} Employee
- * @property {string} id
- * @property {string} name
- * @property {boolean} isPresent 是否在職
- */
-
 function GetHolidayData() {
   const spreadsheet = SpreadsheetApp.getActiveSpreadsheet()
   const sheet = spreadsheet.getSheetByName('放假清單')
@@ -30,6 +15,12 @@ function GetHolidayData() {
   })
 }
 
+/**
+ * 休假日
+ * @typedef {Object} Holiday
+ * @property {boolean} isHoliday
+ * @property {string} desc
+ */
 class HolidayDB {
   constructor() {
     const m = {}
@@ -60,6 +51,13 @@ function GetEmployeeData() {
   return range.getValues().filter(e => e[0] !== "") // 空列就跳過
 }
 
+/**
+ * 員工
+ * @typedef {Object} Employee
+ * @property {string} id
+ * @property {string} name
+ * @property {boolean} isPresent 是否在職
+ */
 class EmployeeDB {
   constructor() {
     this.m = GetEmployeeData().filter(e=>e[2] === true) // 只挑選在職的員工
