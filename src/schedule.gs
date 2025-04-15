@@ -1,6 +1,7 @@
 const ss = SpreadsheetApp.getActiveSpreadsheet()
 
 function generateYearSchedule(year) {
+  // TODO 如果橫向的範圍不足，目前會沒辦法再生成之後的月份，需要自動擴展
   const ss = SpreadsheetApp.getActiveSpreadsheet()
   const sheet = ss.getActiveSheet()
   let row = 1
