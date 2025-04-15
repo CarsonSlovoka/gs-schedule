@@ -1,11 +1,30 @@
 const ss = SpreadsheetApp.getActiveSpreadsheet()
 
-function generateSchedule(year, month) {
+function generateYearSchedule(year) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet()
+  const sheet = ss.getActiveSheet()
+  let row = 1
+
+  for (let month = 1; month <= 12; month++) {
+    const cell = sheet.getRange(row, 1)
+    const usedRows = generateSchedule(year, month, cell)
+    row += usedRows + 2 // 每月行事曆之間空兩列
+  }
+}
+
+function generateSchedule(year, month, startCell) {
   const sheet = ss.getActiveSheet()
   // const lastRow = sheet.getLastRow()
   // const cell = sheet.getRange("A1")
   // const cell = sheet.getRange(row, column)
-  const cell = sheet.getActiveCell()
+  // const cell = sheet.getActiveCell()
+
+  let cell = startCell
+  if (!cell
+      // || cell.isBlank()) // <-- 這是錯的，這都是空的，導致這個承述都會進來
+    {
+    cell = sheet.getRange("A1") // 預設起始點
+  }
 
   const holidayDB = new HolidayDB()
 
@@ -40,7 +59,7 @@ function generateSchedule(year, month) {
   while (date < endData) {
     const beginCol = col
     // 縱向
-    const values = itemHeader.map(e => [e]) // [['日期], []'值班人'], ...]
+    const values = itemHeader.map(e => [e]) // [['日期], ['值班人'], ...]
     sheet.getRange(row, col, itemHeader.length, 1).setValues(values)
     sheet.getRange(row, col).setBackground("#46BDC6") // 日期
     sheet.getRange(row, col).setFontColor("white")
@@ -117,8 +136,14 @@ function generateSchedule(year, month) {
   // sheet.getRange(endRow + 1, beginCol + 5).setValue(`=RowToColumnSet(B225:H225,B233:H233)`)
   sheet.getRange(endRow + 1, beginCol + 5).setValue(`=RowToColumnSet(${employeeRanges.join(",")})`)
   sheet.getRange(endRow + 1, beginCol + 6).setValue(`=COUNTIF(${entireRange.getA1Notation()}, ${sheet.getRange(endRow + 1, beginCol + 5).getA1Notation()})`)
+
+  return endRow - beginRow + 2 // 回傳總高度
 }
 
 function TestGenerateSchedule() {
   generateSchedule(2024, 1)
+}
+
+function TestGenerateYearSchedule() {
+  generateYearSchedule(2024)
 }
