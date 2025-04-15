@@ -4,11 +4,12 @@ function generateYearSchedule(year) {
   const ss = SpreadsheetApp.getActiveSpreadsheet()
   const sheet = ss.getActiveSheet()
   let row = 1
+  let col = 1
 
   for (let month = 1; month <= 12; month++) {
-    const cell = sheet.getRange(row, 1)
-    const usedRows = generateSchedule(year, month, cell)
-    row += usedRows + 2 // 每月行事曆之間空兩列
+    const cell = sheet.getRange(row, col)
+    const [endRow, endCol] = generateSchedule(year, month, cell)
+    col = endCol + 3 // 橫向放置
   }
 }
 
@@ -21,7 +22,8 @@ function generateSchedule(year, month, startCell) {
 
   let cell = startCell
   if (!cell
-      // || cell.isBlank()) // <-- 這是錯的，這都是空的，導致這個承述都會進來
+      // || cell.isBlank() // <-- 這是錯的，這都是空的，導致這個承述都會進來
+    )
     {
     cell = sheet.getRange("A1") // 預設起始點
   }
@@ -135,9 +137,10 @@ function generateSchedule(year, month, startCell) {
   // 自動整理出當月員工出勤的天數
   // sheet.getRange(endRow + 1, beginCol + 5).setValue(`=RowToColumnSet(B225:H225,B233:H233)`)
   sheet.getRange(endRow + 1, beginCol + 5).setValue(`=RowToColumnSet(${employeeRanges.join(",")})`)
-  sheet.getRange(endRow + 1, beginCol + 6).setValue(`=COUNTIF(${entireRange.getA1Notation()}, ${sheet.getRange(endRow + 1, beginCol + 5).getA1Notation()})`)
+  // sheet.getRange(endRow + 1, beginCol + 6).setValue(`=COUNTIF(${entireRange.getA1Notation()}, ${sheet.getRange(endRow + 1, beginCol + 5).getA1Notation()})`)
+  sheet.getRange(endRow + 1, beginCol + 6).setValue(`=COUNTIF(${GetLockedA1Notation(entireRange)}, ${sheet.getRange(endRow + 1, beginCol + 5).getA1Notation()})`)
 
-  return endRow - beginRow + 2 // 回傳總高度
+  return [endRow, endCol]
 }
 
 function TestGenerateSchedule() {
