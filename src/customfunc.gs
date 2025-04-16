@@ -43,6 +43,30 @@ function GetLockedA1Notation(range) {
   return `$${startCol}$${startRow}:$${endCol}$${endRow}`;
 }
 
+
+/** 取得台灣指定年份的行事曆
+ * 範例: https://cdn.jsdelivr.net/gh/ruyut/TaiwanCalendar/data/2025.json
+ * @param {String} year
+ * @customfunction
+ */
+function GetCalendar(year) {
+  const url = `https://cdn.jsdelivr.net/gh/ruyut/TaiwanCalendar/data/${year}.json`
+  const response = UrlFetchApp.fetch(url)
+  const json = JSON.parse(response.getContentText())
+
+  const holidays = []
+  json.forEach(item => {
+    const dateStr = item.date
+    const year = dateStr.substring(0, 4)
+    const month = dateStr.substring(4, 6)
+    const day = dateStr.substring(6, 8)
+    const date = new Date(year, month - 1, day)
+    holidays.push([date, item.week, item.isHoliday, item.description])
+  })
+  return holidays
+}
+
+
 function TestRowToColumnSet() {
   // const sheet = ss.getActiveSheet()
   // const a = RowToColumnSet(sheet.getRange("B225:H225").getValues())
